@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.dao.GroupDao">
+
+
+	<resultMap type="Group" id="GroupResult">
+		<result property="id" column="id_" />
+		<result property="name" column="name_" />
+	</resultMap>
+
+	<select id="find" parameterType="Map" resultMap="GroupResult">
+		select * from act_id_group
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+
+	<select id="findById" parameterType="String" resultMap="GroupResult">
+		select *
+		from act_id_group where id_ = #{id}
+	</select>
+
+	<select id="getTotal" parameterType="Long" resultType="Long">
+		select
+		count(*) from act_id_group
+
+	</select>
+
+	<delete id="delete" parameterType="String">
+		delete from act_id_group where
+		id_=#{id}
+	</delete>
+
+	<insert id="add" parameterType="Group">
+		insert into act_id_group
+		values(#{id},null,#{name},null);
+	</insert>
+
+	<update id="update" parameterType="Group">
+		update act_id_group
+		<set>
+			<if test="name!=null and name!='' ">
+				name_=#{name},
+			</if>
+		</set>
+		where id_=#{id}
+	</update>
+
+	<select id="findByUserId" parameterType="String" resultMap="GroupResult">
+		SELECT g.ID_ AS id,g.NAME_ AS NAME FROM act_id_group g LEFT JOIN
+		act_id_membership m ON m.GROUP_ID_=g.ID_ LEFT JOIN act_id_user u ON
+		u.ID_=m.USER_ID_ WHERE u.ID_=#{userId} 
+		<!-- SELECT g.ID_ AS id,g.NAME_ as name ,u.FIRST_,u.LAST_ from act_id_group g
+		LEFT JOIN act_id_membership m ON g.ID_=m.GROUP_ID_ 
+		LEFT JOIN act_id_user u ON m.USER_ID_=u.ID_ 
+		where u.ID_=#{userId} -->
+	</select>
+</mapper> 
